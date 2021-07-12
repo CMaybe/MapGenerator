@@ -93,16 +93,16 @@ void BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
 			for(int i = x1;;i--){
 				if(arr[p][i]== WALL) break;
 				if(arr[p][i]== ROOM){
-					for(int j=x1;j>=i;j--){
+					for(int j=x1;j>=i-1;j--){
 						arr[p][j]=ROOM;
 					}
 					break;
 				}
 			}
-			for(int i = x1;;i++){
+			for(int i = x2;;i++){
 				if(arr[p][i]== WALL) break;
 				if(arr[p][i]== ROOM){
-					for(int j=x1;j<=i;j++){
+					for(int j=x1;j<=i+1;j++){
 						arr[p][j]=TERNEL;
 					}
 					break;
@@ -114,16 +114,16 @@ void BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
 			for(int i = y1;;i--){
 				if(arr[i][p]== WALL) break;
 				if(arr[i][p]== ROOM){
-					for(int j=y1;j>=i;j--){
+					for(int j=y1;j>=i-1;j--){
 						arr[j][p]=TERNEL;
 					}
 					break;
 				}
 			}
-			for(int i = y1;;i++){
+			for(int i = y2;;i++){
 				if(arr[i][p]== WALL) break;
 				if(arr[i][p]== ROOM){
-					for(int j=y1;j<=i;j++){
+					for(int j=y1;j<=i+1;j++){
 						arr[j][p]=TERNEL;
 					}
 					break;
