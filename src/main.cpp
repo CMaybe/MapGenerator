@@ -27,7 +27,6 @@ typedef struct EDGE{
 }Edge;
 
 int target =5;
-int test = 0;
 int arr[HEIGHT+2][WIDTH+2];
 
 void init(int tile){
@@ -79,7 +78,6 @@ void save(std::string name){
 
 Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
 	if(cnt==target){
-		test= target;
 		x1 += std::rand() % 3 +1;
 		if(x1<1) x1=1;
 		if(x1>WIDTH) x1=WIDTH;
