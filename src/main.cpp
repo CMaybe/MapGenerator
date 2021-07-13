@@ -26,7 +26,6 @@ typedef struct EDGE{
 	int y2;
 }Edge;
 
-int target =5;
 int arr[HEIGHT+2][WIDTH+2];
 
 void init(int tile){
@@ -76,7 +75,7 @@ void save(std::string name){
     writeFile.close();   
 }
 
-Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
+Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt, int target){
 	if(cnt==target){
 		x1 += std::rand() % 3 +1;
 		if(x1<1) x1=1;
@@ -107,8 +106,8 @@ Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
 		for(int i=y1;i<=y2;i++){
 			arr[i][t]=LINE;
 		}
-		Edge p1 = BSP(x1,y1,t,y2,W,cnt+1); // left
-		Edge p2 = BSP(t,y1,x2,y2,W,cnt+1); // right
+		Edge p1 = BSP(x1,y1,t,y2,W,cnt+1, target); // left
+		Edge p2 = BSP(t,y1,x2,y2,W,cnt+1, target); // right
 		
 		t_x1 = p1.x2;
 		t_x2 = p2.x1;
@@ -132,8 +131,8 @@ Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
 		for(int i=x1;i<=x2;i++){
 			arr[t][i]=LINE;
 		}
-		Edge p1 = BSP(x1,y1,x2,t,H,cnt+1); // up
-		Edge p2 = BSP(x1,t,x2,y2,H,cnt+1); // down
+		Edge p1 = BSP(x1,y1,x2,t,H,cnt+1,target); // up
+		Edge p2 = BSP(x1,t,x2,y2,H,cnt+1,target); // down
 		
 		
 		t_x1 = std::max(p1.x1,p2.x1);
@@ -223,8 +222,8 @@ int main(int argc, char* argv[]) {
 	std::srand(std::time(nullptr));
 	
 	init(NONE);
-	BSP(1,1,WIDTH,HEIGHT,H,1);
-	// save("BSP.txt");
+	BSP(1,1,WIDTH,HEIGHT,H,1,5);
+	save("BSP.txt");
 
 	init(ROOM);
 	Cellular_Automata(20,4,7,7);
