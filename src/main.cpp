@@ -8,8 +8,8 @@
 #define H true
 #define W false
 
-#define WIDTH 70
-#define HEIGHT 70
+#define WIDTH 64
+#define HEIGHT 64
 
 #define PRE_WALL	6
 #define PRE_ROOM	5
@@ -134,7 +134,7 @@ Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt, int target){
 			if(pflag) arr[up][i]=TERNEL;
 			else arr[down][i]=TERNEL;
 		}
-		return Edge{p1.x1,std::max(p1.y1,p2.y1),p2.x2,std::min(p1.y2,p2.y2)};
+		return Edge{p1.x1,std::min(p1.y1,p2.y1),p2.x2,std::max(p1.y2,p2.y2)};
 
 		
 	}
@@ -173,7 +173,7 @@ Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt, int target){
 			if(pflag) arr[i][left]=TERNEL;
 			else arr[i][right]=TERNEL;
 		}
-		return Edge{std::max(p1.x1,p2.x1),p1.y1,std::min(p1.x2,p2.x2),p2.y2};
+		return Edge{std::min(p1.x1,p2.x1),p1.y1,std::max(p1.x2,p2.x2),p2.y2};
 	}
 	return Edge{t_x1,t_y1,t_x2,t_y2};
 }
