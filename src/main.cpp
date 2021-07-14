@@ -15,7 +15,7 @@
 #define PRE_ROOM	5
 #define LINE		4
 #define WALL 		3
-#define TERNEL 		2
+#define tunnel 		2
 #define ROOM		1
 #define NONE 		0
 
@@ -57,8 +57,8 @@ void save(std::string name){
 				case ROOM:
 					output+="  ";
 					break;
-				case TERNEL:
-					output+="  ";
+				case tunnel:
+					output+=" `";
 					break;
 				case WALL:
 					output+=" .";
@@ -119,20 +119,26 @@ Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt, int target){
 			down = std::rand() % (t_y2-t_y1) + t_y1;
 		}while(arr[up][t_x1]!=ROOM || arr[down][t_x2]!=ROOM);
 		bool pflag=true;
-		for(int i = t_x1;i<=t_x2;i++){
-			if(arr[up][i]==TERNEL || arr[up][i]==LINE){
-				arr[up][i]=TERNEL;
+		for(int i = t_x1+1;i<t_x2;i++){
+			if(arr[up][i]==tunnel || arr[up][i]==LINE){
+				arr[up][i]=tunnel;
 				int dir = up < down ? 1 : -1;
 				int j = 0;
 				for(j = up;j!=down;j+=dir){
-					arr[j][i]=TERNEL;
+					arr[j][i]=tunnel;
 				}
-				arr[j][i]=TERNEL;
+				arr[j][i]=tunnel;
 				pflag = false;
 				continue;
 			}
-			if(pflag) arr[up][i]=TERNEL;
-			else arr[down][i]=TERNEL;
+			if(pflag){
+				if(arr[up][i]==ROOM) break;
+				arr[up][i]=tunnel;
+			}
+			else{
+				if(arr[down][i]==ROOM) break;
+				arr[down][i]=tunnel;
+			}
 		}
 		return Edge{p1.x1,std::min(p1.y1,p2.y1),p2.x2,std::max(p1.y2,p2.y2)};
 
@@ -158,20 +164,26 @@ Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt, int target){
 			right = std::rand() % (t_x2-t_x1) + t_x1;
 		}while(arr[t_y1][left]!=ROOM || arr[t_y2][right]!=ROOM);
 		bool pflag=true;
-		for(int i = t_y1;i<=t_y2;i++){
-			if(arr[i][left]==TERNEL || arr[i][left]==LINE){
-				arr[i][left]=TERNEL;
+		for(int i = t_y1+1;i<t_y2;i++){
+			if(arr[i][left]==tunnel || arr[i][left]==LINE){
+				arr[i][left]=tunnel;
 				int dir = left < right ? 1 : -1;
 				int j = 0;
 				for(j = left;j!=right;j+=dir){
-					arr[i][j]=TERNEL;
+					arr[i][j]=tunnel;
 				}
-				arr[i][j]=TERNEL;
+				arr[i][j]=tunnel;
 				pflag = false;
 				continue;
 			}
-			if(pflag) arr[i][left]=TERNEL;
-			else arr[i][right]=TERNEL;
+			if(pflag){
+				if(arr[i][left]==ROOM) break;
+				arr[i][left]=tunnel;
+			}
+			else{
+				if(arr[i][left]==ROOM) break;
+				arr[i][right]=tunnel;
+			} 
 		}
 		return Edge{std::min(p1.x1,p2.x1),p1.y1,std::max(p1.x2,p2.x2),p2.y2};
 	}
