@@ -8,8 +8,8 @@
 #define H true
 #define W false
 
-#define WIDTH 50
-#define HEIGHT 50
+#define WIDTH 70
+#define HEIGHT 70
 
 #define PRE_WALL	6
 #define PRE_ROOM	5
@@ -80,16 +80,16 @@ void save(std::string name){
 Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
 	if(cnt==target){
 		test= target;
-		x1 += std::rand() % 3 +1;
+		x1 += std::rand() % 3 +2;
 		if(x1<1) x1=1;
 		if(x1>WIDTH) x1=WIDTH;
-		y1 += std::rand() % 3 + 1;
+		y1 += std::rand() % 3 + 2;
 		if(y1<1) y1=1;
 		if(y1>HEIGHT) y1=HEIGHT;
-		x2 -= std::rand() % 3  + 1;
+		x2 -= std::rand() % 3  + 2;
 		if(x2<1) x2=1;
 		if(x2>WIDTH) x2=WIDTH;
-		y2 -= std::rand() % 3 + 1;
+		y2 -= std::rand() % 3 + 2;
 		if(y2<1) y2=1;
 		if(y2>HEIGHT) y2=HEIGHT;
 		for(int i=y1;i<y2;i++){
@@ -114,16 +114,28 @@ Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
 		
 		t_x1 = p1.x2;
 		t_x2 = p2.x1;
-		t_y1 = std::max(p1.y1,p2.y1);
-		t_y2 = std::min(p1.y2,p2.y2);
-		int p = 0;
+		t_y1 = std::min(p1.y1,p2.y1);
+		t_y2 = std::max(p1.y2,p2.y2);
+		int up = 0,down = 0;
 		do{
-			p = std::rand() % (t_y2-t_y1) + t_y1;
-			// break;
-		}while(arr[p][t_x1]!=ROOM || arr[p][t_x2]!=ROOM);
+			up = std::rand() % (t_y2-t_y1) + t_y1;
+			down = std::rand() % (t_y2-t_y1) + t_y1;
+		}while(arr[up][t_x1]!=ROOM || arr[down][t_x2]!=ROOM);
+		bool pflag=true;
 		for(int i = t_x1;i<=t_x2;i++){
-			if(arr[p][i]==TERNEL) break;
-			arr[p][i]=TERNEL;
+			if(arr[up][i]==TERNEL || arr[up][i]==LINE){
+				arr[up][i]=TERNEL;
+				int dir = up < down ? 1 : -1;
+				int j = 0;
+				for(j = up;j!=down;j+=dir){
+					arr[j][i]=TERNEL;
+				}
+				arr[j][i]=TERNEL;
+				pflag = false;
+				continue;
+			}
+			if(pflag) arr[up][i]=TERNEL;
+			else arr[down][i]=TERNEL;
 		}
 		return Edge{p1.x1,std::max(p1.y1,p2.y1),p2.x2,std::min(p1.y2,p2.y2)};
 
@@ -138,18 +150,31 @@ Edge BSP(int x1,int y1,int x2, int y2, bool flag, int cnt){
 		Edge p2 = BSP(x1,t,x2,y2,H,cnt+1); // down
 		
 		
-		t_x1 = std::max(p1.x1,p2.x1);
-		t_x2 = std::min(p1.x2,p2.x2);
+		t_x1 = std::min(p1.x1,p2.x1);
+		t_x2 = std::max(p1.x2,p2.x2);
 		t_y1 = p1.y2;
 		t_y2 = p2.y1;
-		int p = 0;
-		do{
-			p = std::rand() % (t_x2-t_x1) + t_x1;
-		}while(arr[t_y1][p]!=ROOM || arr[t_y2][p]!=ROOM);
 		
+		int left = 0,right = 0;
+		do{
+			left = std::rand() % (t_x2-t_x1) + t_x1;
+			right = std::rand() % (t_x2-t_x1) + t_x1;
+		}while(arr[t_y1][left]!=ROOM || arr[t_y2][right]!=ROOM);
+		bool pflag=true;
 		for(int i = t_y1;i<=t_y2;i++){
-			if(arr[i][p]==TERNEL) break;
-			arr[i][p]=TERNEL;
+			if(arr[i][left]==TERNEL || arr[i][left]==LINE){
+				arr[i][left]=TERNEL;
+				int dir = left < right ? 1 : -1;
+				int j = 0;
+				for(j = left;j!=right;j+=dir){
+					arr[i][j]=TERNEL;
+				}
+				arr[i][j]=TERNEL;
+				pflag = false;
+				continue;
+			}
+			if(pflag) arr[i][left]=TERNEL;
+			else arr[i][right]=TERNEL;
 		}
 		return Edge{std::max(p1.x1,p2.x1),p1.y1,std::min(p1.x2,p2.x2),p2.y2};
 	}
@@ -226,7 +251,7 @@ int main(int argc, char* argv[]) {
 	
 	init(NONE);
 	BSP(1,1,WIDTH,HEIGHT,H,1);
-	// save("BSP.txt");
+	save("BSP.txt");
 
 	init(ROOM);
 	Cellular_Automata(20,4,7,7);
